@@ -1,0 +1,50 @@
+CREATE TABLE Books (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    isbn VARCHAR(20),
+    published_date DATE,
+    genre VARCHAR(50)
+);
+CREATE TABLE Members (
+    member_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    address VARCHAR(255),
+    phone VARCHAR(20)
+);
+CREATE TABLE Transactions (
+    transaction_id INT PRIMARY KEY,
+    book_id INT,
+    member_id INT,
+    checkout_date DATE,
+    return_date DATE,
+    FOREIGN KEY (book_id) REFERENCES Books(book_id),
+    FOREIGN KEY (member_id) REFERENCES Members(member_id)
+);
+-- Inserting books
+INSERT INTO Books (book_id, title, author, isbn, published_date, genre)
+VALUES
+    (1, 'To Kill a Mockingbird', 'Harper Lee', '9780061120084', '1960-07-11', 'Fiction'),
+    (2, '1984', 'George Orwell', '9780451524935', '1949-06-08', 'Science Fiction'),
+    (3, 'The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', '1925-04-10', 'Fiction');
+
+-- Inserting members
+INSERT INTO Members (member_id, first_name, last_name, address, phone)
+VALUES
+    (1, 'John', 'Doe', '123 Main St, Anytown, USA', '555-1234'),
+    (2, 'Jane', 'Smith', '456 Oak Ave, Somewhere, USA', '555-5678');
+
+-- Inserting transactions (borrowing books)
+INSERT INTO Transactions (transaction_id, book_id, member_id, checkout_date, return_date)
+VALUES
+    (1, 1, 1, '2024-06-01', '2024-06-15'),
+    (2, 2, 2, '2024-06-05', '2024-06-20');
+SELECT Books.title, Books.author, Transactions.checkout_date, Transactions.return_date
+FROM Transactions
+JOIN Books ON Transactions.book_id = Books.book_id
+WHERE Transactions.member_id = 1;
+SELECT Members.first_name, Members.last_name, Transactions.checkout_date, Transactions.return_date
+FROM Transactions
+JOIN Members ON Transactions.member_id = Members.member_id
+WHERE Transactions.book_id = 2;

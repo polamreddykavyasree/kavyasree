@@ -1,0 +1,58 @@
+-- Table for storing artists
+CREATE TABLE Artist (
+    ArtistID INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Birthdate DATE,
+    Nationality VARCHAR(50)
+);
+
+-- Table for storing artworks
+CREATE TABLE Artwork (
+    ArtworkID INT PRIMARY KEY,
+    Title VARCHAR(200) NOT NULL,
+    ArtistID INT,
+    YearCreated INT,
+    Medium VARCHAR(100),
+    Price DECIMAL(10, 2),
+    CONSTRAINT FK_Artwork_Artist FOREIGN KEY (ArtistID) REFERENCES Artist(ArtistID)
+);
+
+-- Table for storing exhibitions
+CREATE TABLE Exhibition (
+    ExhibitionID INT PRIMARY KEY,
+    Title VARCHAR(200) NOT NULL,
+    StartDate DATE,
+    EndDate DATE,
+    Curator VARCHAR(100),
+    Description TEXT
+);
+
+-- Table for mapping artworks to exhibitions
+CREATE TABLE ExhibitionArtwork (
+    ExhibitionID INT,
+    ArtworkID INT,
+    CONSTRAINT FK_ExhibitionArtwork_Exhibition FOREIGN KEY (ExhibitionID) REFERENCES Exhibition(ExhibitionID),
+    CONSTRAINT FK_ExhibitionArtwork_Artwork FOREIGN KEY (ArtworkID) REFERENCES Artwork(ArtworkID),
+    PRIMARY KEY (ExhibitionID, ArtworkID)
+);
+
+-- Table for storing customers
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Phone VARCHAR(20)
+);
+
+-- Table for storing transactions
+CREATE TABLE Transaction (
+    TransactionID INT PRIMARY KEY,
+    CustomerID INT,
+    ArtworkID INT,
+    TransactionDate DATE,
+    PricePaid DECIMAL(10, 2),
+    PaymentMethod VARCHAR(50),
+    CONSTRAINT FK_Transaction_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    CONSTRAINT FK_Transaction_Artwork FOREIGN KEY (ArtworkID) REFERENCES Artwork(ArtworkID)
+);

@@ -1,0 +1,81 @@
+-- Customers table
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    CustomerName VARCHAR(100) NOT NULL,
+    ContactName VARCHAR(100),
+    Address VARCHAR(255),
+    City VARCHAR(100),
+    PostalCode VARCHAR(20),
+    Country VARCHAR(100),
+    Phone VARCHAR(50)
+);
+
+-- Suppliers table
+CREATE TABLE Suppliers (
+    SupplierID INT PRIMARY KEY,
+    SupplierName VARCHAR(100) NOT NULL,
+    ContactName VARCHAR(100),
+    Address VARCHAR(255),
+    City VARCHAR(100),
+    PostalCode VARCHAR(20),
+    Country VARCHAR(100),
+    Phone VARCHAR(50)
+);
+
+-- Products table
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(100) NOT NULL,
+    SupplierID INT,
+    Category VARCHAR(100),
+    Unit VARCHAR(50),
+    Price DECIMAL(10, 2),
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+);
+
+-- Orders table
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATE,
+    ShipDate DATE,
+    ShipAddress VARCHAR(255),
+    ShipCity VARCHAR(100),
+    ShipPostalCode VARCHAR(20),
+    ShipCountry VARCHAR(100),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- OrderDetails table
+CREATE TABLE OrderDetails (
+    OrderDetailID INT PRIMARY KEY,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    UnitPrice DECIMAL(10, 2),
+    Discount DECIMAL(5, 2),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+-- Inventory table
+CREATE TABLE Inventory (
+    ProductID INT PRIMARY KEY,
+    QuantityInStock INT,
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+INSERT INTO Customers (CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country, Phone)
+VALUES (1, 'Acme Corp', 'John Doe', '123 Elm St', 'Springfield', '12345', 'USA', '555-1234');
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, ShipDate, ShipAddress, ShipCity, ShipPostalCode, ShipCountry)
+VALUES (1, 1, '2024-06-27', '2024-07-01', '123 Elm St', 'Springfield', '12345', 'USA');
+
+INSERT INTO OrderDetails (OrderDetailID, OrderID, ProductID, Quantity, UnitPrice, Discount)
+VALUES (1, 1, 1, 10, 20.00, 0.00);
+UPDATE Inventory
+SET QuantityInStock = QuantityInStock - 10
+WHERE ProductID = 1;
+SELECT Orders.OrderID, Orders.OrderDate, Orders.ShipDate, Customers.CustomerName, Customers.ContactName
+FROM Orders
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+WHERE Customers.CustomerID = 1;
